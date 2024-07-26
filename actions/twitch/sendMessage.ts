@@ -1,33 +1,39 @@
 // ./actions/twitch/sendMessage.ts
 import tmi from 'tmi.js';
 
-export async function sendMessage(username: string, accessToken: string, message: string) {
-
-  if (!username || !accessToken || !message || !process.env.NEXT_PUBLIC_TWITCH_CHANNEL) return;
+export async function sendMessage(username: string, accessToken: string) {
+  if (!username || !accessToken || !process.env.NEXT_PUBLIC_TWITCH_CHANNEL) return;
 
   try {
     const client = new tmi.Client({
       options: { debug: true },
       identity: {
-        username,
-        password: `oauth:${accessToken}`
+        username: "ChatAid",
+        password: 'oauth:' + accessToken
       },
-      channels: [process.env.NEXT_PUBLIC_TWITCH_CHANNEL]
+      channels: [ process.env.NEXT_PUBLIC_TWITCH_CHANNEL ]
+    });
+    
+    client.connect();
+
+    // Respond to messages
+    client.on('message', (channel, tags, message, self) => {
+      // Ignore echoed messages.
+      if(self) return;
+    
+      if(message.toLowerCase() === '!hello') {
+        // "@alca, heya!"
+        client.say(channel, `@${tags.username}, heya!`);
+      }
     });
 
-    await client.connect();
+    // Send a message every 10 seconds
+    setInterval(() => {
+      const channel = process.env.NEXT_PUBLIC_TWITCH_CHANNEL;
+      if (channel) client.say(channel, 'Reloj');
+    }, 10000); // 10000 ms = 10 seconds
 
-    client.on('connected', (address, port) => {
-      console.log(`Connected to ${address}:${port}`);
-      client.say(process.env.NEXT_PUBLIC_TWITCH_CHANNEL ?? '', message)
-        .then(() => {
-          console.log(`Message sent: ${message}`);
-        })
-        .catch(err => {
-          console.error('Error sending message:', err);
-        });
-    });
   } catch (error) {
-    console.error('Error in sendMessage:', error);
+    console.error('Error sending message:', error);
   }
 }

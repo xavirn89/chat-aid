@@ -1,19 +1,19 @@
 import { create } from 'zustand';
 
 interface UserStoreState {
-  accesToken: string | null;
-  setAccessToken: (accessToken: string) => void;
+  user: any;
+  setUser: (user: any) => void;
 
-  refreshToken: string | null;
-  setRefreshToken: (refreshToken: string) => void;
+  isLogged: boolean;
+  setIsLogged: (isLogged: boolean) => void;
 }
 
-const useStateStore = create<UserStoreState>((set, get) => ({
-  accesToken: null,
-  setAccessToken: (accessToken: string) => set({ accesToken: accessToken }),
+const useUserStore = create<UserStoreState>((set, get) => ({
+  user: null,
+  setUser: (user) => set({ user }),
 
-  refreshToken: null,
-  setRefreshToken: (refreshToken: string) => set({ refreshToken }),
+  isLogged: false,
+  setIsLogged: (isLogged) => set({ isLogged }),
 }));
 
-export default useStateStore;
+export default useUserStore;

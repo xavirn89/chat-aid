@@ -2,16 +2,18 @@
 'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { saveTokens_user } from '@/actions/firestore/saveTokens_user';
+import useTwitchStore from '@/stores/twitchStore';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const state = searchParams.get('state');
+  const { twitchClientID ,twitchClientSecret } = useTwitchStore.getState();
 
   if (!code || !state) return NextResponse.json({ error: 'Missing code or state' }, { status: 400 });
 
-  const clientId = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
-  const clientSecret = process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET;
+  const clientId = twitchClientID || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
+  const clientSecret = twitchClientSecret || process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET;
   const redirectUri = process.env.NEXT_PUBLIC_TWITCH_REDIRECT_URI;
   if (!clientId || !clientSecret || !redirectUri) return NextResponse.json({ error: 'Missing client ID, client secret, or redirect URI' }, { status: 400 });
 
@@ -40,8 +42,7 @@ export async function GET(request: NextRequest) {
 
     const { access_token, refresh_token } = data;
     
-    const userId = 'user-1234'; // Cambia esto por un identificador único real en el futuro
-    const saveResult = await saveTokens_user(userId, access_token, refresh_token);
+    const saveResult = await saveTokens_user(state, access_token, refresh_token);
 
     if (!saveResult.success) {
       return NextResponse.json({ error: 'Failed to save tokens', details: saveResult.error }, { status: 500 });
