@@ -5,6 +5,7 @@ import { saveTokens_user } from '@/actions/firestore/saveTokens_user';
 import useTwitchStore from '@/stores/twitchStore';
 
 export async function GET(request: NextRequest) {
+  console.log("Request:", JSON.stringify(request, null, 2));
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const state = searchParams.get('state');

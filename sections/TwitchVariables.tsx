@@ -9,15 +9,14 @@ const TwitchVariables: React.FC = () => {
   const { 
     twitchClientID, setTwitchClientID, resetTwitchClientID, 
     twitchClientSecret, setTwitchClientSecret, resetTwitchClientSecret, 
-    channel, setChannel, resetChannel, accessToken, refreshToken
+    accessToken, refreshToken
   } = useTwitchStore();
   const { user } = useUserStore();
 
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
-  const [channelName, setChannelName] = useState<string>('');
 
-  const flagToConnect: boolean = !!(twitchClientID && twitchClientSecret && channel);
+  const flagToConnect: boolean = !!(twitchClientID && twitchClientSecret);
   const flagIsConnected: boolean = !!(accessToken && refreshToken);
 
   useEffect(() => {
@@ -32,13 +31,7 @@ const TwitchVariables: React.FC = () => {
       setClientSecret(envClientSecret);
       setTwitchClientSecret(envClientSecret);
     }
-
-    const envChannel = process.env.NEXT_PUBLIC_TWITCH_CHANNEL;
-    if (envChannel) {
-      setChannelName(envChannel);
-      setChannel(envChannel);
-    }
-  }, [setTwitchClientID, setTwitchClientSecret, setChannel]);
+  }, [setTwitchClientID, setTwitchClientSecret]);
 
   const handleAskAuthorization = () => {
     console.log('Ask Authorization');
@@ -62,7 +55,7 @@ const TwitchVariables: React.FC = () => {
             alt="Twitch Logo"
             width={100}
             height={100}
-            className="rounded-lg shadow-md"
+            className="rounded-lg shadow-md w-full h-full"
           />
         </div>
         
@@ -133,38 +126,6 @@ const TwitchVariables: React.FC = () => {
             )}
           </div>
 
-          <div className="flex-1">
-            {channel ? (
-              <div className="bg-white p-2 rounded shadow flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <p className="font-bold text-gray-700">Twitch Channel:</p>
-                  <p className="text-gray-600">{channel}</p>
-                </div>
-                <button 
-                  onClick={resetChannel}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
-                >
-                  <FaRedo />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  placeholder="Twitch Channel"
-                  value={channelName}
-                  onChange={(e) => setChannelName(e.target.value)}
-                  className="p-2 border rounded flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-                <button 
-                  onClick={() => setChannel(channelName)} 
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                >
-                  Set
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 

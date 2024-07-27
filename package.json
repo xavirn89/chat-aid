@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.40",
     "@firebase/firestore": "^4.6.4",
+    "ai": "^3.2.37",
     "axios": "^1.7.2",
     "firebase": "^10.12.4",
     "next": "14.2.5",
@@ -19,6 +21,7 @@
     "react-speech-recognition": "^3.10.0",
     "tmi.js": "^1.8.5",
     "uuidjs": "^5.1.0",
+    "zod": "^3.23.8",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

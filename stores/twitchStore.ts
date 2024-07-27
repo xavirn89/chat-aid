@@ -15,9 +15,11 @@ interface TwitchStoreState {
 
   accessToken: string | null
   setAccessToken: (accessToken: string) => void
+  resetAccessToken: () => void
 
   refreshToken: string | null
   setRefreshToken: (refreshToken: string) => void
+  resetRefreshToken: () => void
 
   chatMessages: string[]
   addChatMessage: (message: string) => void
@@ -39,9 +41,11 @@ const useTwitchStore = create<TwitchStoreState>((set, get) => ({
 
   accessToken: null,
   setAccessToken: (accessToken) => set({ accessToken }),
+  resetAccessToken: () => set({ accessToken: null }),
 
   refreshToken: null,
   setRefreshToken: (refreshToken) => set({ refreshToken }),
+  resetRefreshToken: () => set({ refreshToken: null }),
 
   chatMessages: [],
   addChatMessage: (message) => set((state) => ({ chatMessages: [...state.chatMessages, message] })),
