@@ -21,7 +21,7 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
   const clientRef = useRef<tmi.Client | null>(null);
   const [twitchMessages, setTwitchMessages] = useState<TwitchMessage[]>([]);
 
-  const testfucntion = async (messages: string[], transcript: string) => {
+  const generateResponseToQuestion = async (messages: string[], transcript: string) => {
     if (!messages || messages.length === 0) return null;
     if (!transcript) return null;
 
@@ -79,7 +79,7 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
       const intervalId = setInterval(async () => {
         if (!transcriptRef.current) return;
         console.log('Fetching new joke');
-        const response = await testfucntion(chatMessagesRef.current, transcriptRef.current);
+        const response = await generateResponseToQuestion(chatMessagesRef.current, transcriptRef.current);
         if (response) {
           client.say(mainChannel, response);
         }
