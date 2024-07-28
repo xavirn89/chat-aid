@@ -6,6 +6,8 @@ import { TwitchMessage } from '@/types/global';
 import getOpenAIClient from '@/utils/ai-sdk/openaiProvider';
 import { generateText } from 'ai';
 import { basePrompt } from '@/utils/ai-sdk/prompts';
+import HeaderWithButton from '@/components/HeaderWithButtonProps';
+import useTwitchBot from '@/hooks/useTwitchBot';
 
 interface TwitchBotProps {
   transcriptRef: React.MutableRefObject<string | undefined>;
@@ -20,89 +22,17 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
   const [channelName, setChannelName] = useState<string>('');
   const clientRef = useRef<tmi.Client | null>(null);
   const [twitchMessages, setTwitchMessages] = useState<TwitchMessage[]>([]);
-
-  const generateResponseToQuestion = async (messages: string[], transcript: string) => {
-    if (!messages || messages.length === 0) return null;
-    if (!transcript) return null;
-
-    const allChatMessages = messages.filter((message) => !message.startsWith('ChatAid:')).join(', ');
-    const finalPrompt:string  = basePrompt(allChatMessages, transcript);
-    if (finalPrompt.length === 0) return null
-
-    const openaiClient = getOpenAIClient();
-    const { text } = await generateText({
-      model: openaiClient('gpt-3.5-turbo'),
-      prompt: finalPrompt,
-    });
-    resetChatMessages();
-    return text;
-  };
-
-  const handleStartBot = async () => {
-    if (!channel) {
-      console.error('Channel is not set');
-      return;
-    }
-
-    if (!accessToken) {
-      console.error('Access token is not set');
-      return;
-    }
-
-    const mainChannel = channel;
-    try {
-      const client = new tmi.Client({
-        options: { debug: true },
-        identity: {
-          username: 'ChatAid',
-          password: 'oauth:' + accessToken,
-        },
-        channels: [mainChannel],
-      });
-
-      client.connect();
-
-      client.on('message', (channel, tags, message, self) => {
-        if (self) return;
-
-        if (message.toLowerCase() === '!hello') {
-          client.say(channel, `@${tags.username}, heya!`);
-        }
-
-        if (message) {
-          const usermessage = tags.username;
-          const text = message;
-          addChatMessage(`${usermessage}: ${text}`);
-        }
-      });
-
-      const intervalId = setInterval(async () => {
-        if (!transcriptRef.current) return;
-        console.log('Fetching new joke');
-        const response = await generateResponseToQuestion(chatMessagesRef.current, transcriptRef.current);
-        if (response) {
-          client.say(mainChannel, response);
-        }
-        resetTranscript();
-      }, 30000);
-
-      clientRef.current = client;
-      setBotRunning(true);
-
-      // Cleanup function to clear the interval when the bot stops
-      return () => clearInterval(intervalId);
-    } catch (error) {
-      console.error('Error starting bot:', error);
-    }
-  };
-
-  const handleStopBot = () => {
-    if (clientRef.current) {
-      clientRef.current.disconnect();
-      clientRef.current = null;
-      setBotRunning(false);
-    }
-  };
+  const { handleStartBot, handleStopBot } = useTwitchBot({
+    channel,
+    accessToken,
+    addChatMessage,
+    transcriptRef,
+    chatMessagesRef,
+    resetChatMessages,
+    resetTranscript,
+    clientRef,
+    setBotRunning,
+  });
 
   const toggleBot = () => {
     if (botRunning) {
@@ -123,10 +53,16 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
 
   return (
     <div className="flex flex-col p-6 bg-gray-100 rounded-lg shadow-lg w-full h-full space-y-4">
-      <div className="flex justify-start w-full">
-        <h2 className='font-bold text-2xl'>Twitch Bot</h2>
-      </div>
-
+      <HeaderWithButton
+        title="Twitch Bot"
+        onClick={toggleBot}
+        condition={botRunning}
+        textOnTrue="Stop Bot"
+        textOnFalse="Start Bot"
+        iconOnTrue={<FaStop />}
+        iconOnFalse={<FaPlay />}
+        showButton={true}
+      />
       <div className="flex w-full space-x-2">
         {channel ? (
           <div className="bg-white p-2 rounded shadow flex items-center justify-between w-full">
@@ -160,31 +96,21 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
         )}
       </div>
 
-      {channel && (<>
-        <div className="flex justify-end w-full">
-          <button
-            onClick={toggleBot}
-            className={`flex items-center space-x-2 px-4 py-2 rounded transition ${botRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}
-          >
-            {botRunning ? <FaStop /> : <FaPlay />}
-            <span>{botRunning ? 'Stop Bot' : 'Start Bot'}</span>
-          </button>
-        </div>
-
-        {botRunning && (
+      {channel && (
+        <>
           <div className="bg-white p-4 rounded-lg shadow w-full h-full">
             <h2 className="text-lg font-semibold mb-2">Chat Messages</h2>
             <ul className="space-y-1">
               {twitchMessages.map((message, index) => (
                 <li key={index} className="text-gray-700">
-                  <span className='text-blue-500 font-bold'>{message.user}</span>
-                  <span>{message.text}</span>
+                  <span className="text-blue-500 font-bold">{message.user}</span>
+                  <span>: {message.text}</span>
                 </li>
               ))}
             </ul>
           </div>
-        )}
-      </>)}
+        </>
+      )}
     </div>
   );
 };

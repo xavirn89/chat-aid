@@ -97,10 +97,7 @@ const Home = () => {
   return (
     <div className='flex flex-col flex-1 w-screen h-full min-h-screen'>
       <NavBar />
-      <div className='flex flex-col items-center justify-center'>
-        <h1 className='text-xl font-black'>Bienvenido {user?.email}</h1>
-      </div>
-      <div className='flex flex-col w-full h-full max-w-6xl mx-auto mt-14 pb-10'>
+      <div className='flex flex-col w-full h-full max-w-6xl mx-auto mt-8 pb-10'>
         <TwitchVariables />
         <div className='flex flex-1 justify-between w-full mt-10 gap-4'>
           <TwitchBot 

@@ -5,6 +5,7 @@ import useTwitchStore from '@/stores/twitchStore'
 import Image from 'next/image'
 import { askAuthorization } from '@/actions/twitch/askAuthorization'
 import useUserStore from '@/stores/userStore'
+import TwitchCredentialInput from '@/components/TwitchCredentialInput'
 
 const TwitchVariables: React.FC = () => {
   const { 
@@ -14,25 +15,18 @@ const TwitchVariables: React.FC = () => {
   } = useTwitchStore()
   const { user } = useUserStore()
 
-  const [clientId, setClientId] = useState<string>('')
-  const [clientSecret, setClientSecret] = useState<string>('')
-
   const flagToConnect: boolean = !!(twitchClientID && twitchClientSecret)
   const flagIsConnected: boolean = !!(accessToken && refreshToken)
 
+  // TO-DO: Delete
   // Establecer valores de cliente y secreto desde las variables de entorno
   useEffect(() => {
     const envClientId = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID
-    if (envClientId) {
-      setClientId(envClientId)
-      setTwitchClientID(envClientId)
-    }
-
+    if (envClientId) setTwitchClientID(envClientId)
+    
     const envClientSecret = process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET
-    if (envClientSecret) {
-      setClientSecret(envClientSecret)
-      setTwitchClientSecret(envClientSecret)
-    }
+    if (envClientSecret) setTwitchClientSecret(envClientSecret)
+    
   }, [setTwitchClientID, setTwitchClientSecret])
 
   // Solicitar autorización para obtener tokens
@@ -50,8 +44,8 @@ const TwitchVariables: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col p-8 bg-gray-100 rounded-lg shadow-lg w-full gap-4'>
-      <div className="flex items-center w-full space-x-4">
+    <div className='flex flex-col p-8 bg-gray-100 rounded-lg shadow-lg w-full h-fit gap-4'>
+      <div className="flex items-center w-full h-full gap-4">
         <div className="w-fit flex items-center justify-center">
           <Image 
             src="/images/TwitchLogo.png"
@@ -64,87 +58,40 @@ const TwitchVariables: React.FC = () => {
         
         <div className="flex-grow flex justify-between space-x-4">
           <div className="flex-1">
-            {twitchClientID ? (
-              <div className="bg-white p-2 rounded shadow flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <p className="font-bold text-gray-700">Twitch Client ID:</p>
-                  <FaCheckCircle className="text-green-500" />
-                </div>
-                <button 
-                  onClick={resetTwitchClientID}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
-                >
-                  <FaRedo />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="password"
-                  placeholder="Twitch Client ID"
-                  value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
-                  className="p-2 border rounded flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-                <button 
-                  onClick={() => setTwitchClientID(clientId)} 
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                >
-                  Establecer
-                </button>
-              </div>
-            )}
+            <TwitchCredentialInput 
+              label="Twitch Client ID"
+              value={twitchClientID}
+              setValue={setTwitchClientID}
+              resetValue={resetTwitchClientID}
+              placeholder="Twitch Client ID"
+            />
           </div>
 
           <div className="flex-1">
-            {twitchClientSecret ? (
-              <div className="bg-white p-2 rounded shadow flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <p className="font-bold text-gray-700">Twitch Client Secret:</p>
-                  <FaCheckCircle className="text-green-500" />
-                </div>
-                <button 
-                  onClick={resetTwitchClientSecret}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
-                >
-                  <FaRedo />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="password"
-                  placeholder="Twitch Client Secret"
-                  value={clientSecret}
-                  onChange={(e) => setClientSecret(e.target.value)}
-                  className="p-2 border rounded flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                />
-                <button 
-                  onClick={() => setTwitchClientSecret(clientSecret)} 
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                >
-                  Establecer
-                </button>
-              </div>
-            )}
+            <TwitchCredentialInput 
+              label="Twitch Client Secret"
+              value={twitchClientSecret}
+              setValue={setTwitchClientSecret}
+              resetValue={resetTwitchClientSecret}
+              placeholder="Twitch Client Secret"
+            />
           </div>
 
         </div>
       </div>
 
-      <div className="flex w-full justify-end">
-        {flagToConnect && (
-          flagIsConnected ? (
+      {flagToConnect && (
+        <div className="flex w-full justify-end">
+          {flagIsConnected ? (
             <div className="flex items-center gap-4 transition-opacity duration-500 ease-in opacity-100">
               <p className="text-green-500 font-semibold">Access Token</p>
               <FaCheckCircle className="text-green-500" />
-              {/* Refresh */}
               <button 
                 onClick={handleAskAuthorization}
                 className="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-transform duration-300 ease-in-out transform hover:scale-105 gap-2 group"
               >
                 <FaRedo className="group-hover:animate-spin" />
-                <span>Refresh Token</span>
+                <span>Actualizar Token</span>
               </button>
             </div>
           ) : (
@@ -155,9 +102,9 @@ const TwitchVariables: React.FC = () => {
               <FaLink />
               <span>Obtener Access Token</span>
             </button>
-          )
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

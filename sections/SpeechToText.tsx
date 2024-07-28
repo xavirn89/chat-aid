@@ -1,4 +1,5 @@
-import React from 'react';
+import HeaderWithButton from '@/components/HeaderWithButtonProps';
+import React, { useCallback } from 'react';
 import { FaMicrophone, FaMicrophoneSlash, FaPlay, FaStop } from 'react-icons/fa';
 
 interface SpeechToTextProps {
@@ -9,42 +10,29 @@ interface SpeechToTextProps {
   startListening: (options?: any) => void;
 }
 
-const SpeechToText = ({ transcriptRef, resetTranscript, listening, stopListening, startListening }: SpeechToTextProps) => {
+const SpeechToText: React.FC<SpeechToTextProps> = ({ transcriptRef, resetTranscript, listening, stopListening, startListening }) => {
 
-  const handleListening = () => {
+  const handleListening = useCallback(() => {
     if (listening) {
       stopListening();
       resetTranscript();
     } else {
       startListening({ continuous: true, language: 'es-ES' });
     }
-  };
+  }, [listening, stopListening, resetTranscript, startListening]);
 
   return (
     <div className="flex flex-col p-6 bg-gray-100 rounded-lg shadow-lg w-full h-full space-y-4">
-      <div className="flex justify-start w-full">
-        <h2 className="font-bold text-2xl">Speech to Text</h2>
-      </div>
-
-      <div className="flex justify-between items-center w-full">
-        <div className="flex items-center space-x-2">
-          <p className="font-semibold">Microphone:</p>
-          {listening ? (
-            <FaMicrophone className="text-green-500" />
-          ) : (
-            <FaMicrophoneSlash className="text-red-500" />
-          )}
-        </div>
-        <button 
-          onClick={handleListening}
-          className={`flex items-center space-x-2 px-4 py-2 rounded transition ${
-            listening ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
-          } text-white`}
-        >
-          {listening ? <FaStop /> : <FaPlay />}
-          <span>{listening ? 'Stop' : 'Start'}</span>
-        </button>
-      </div>
+      <HeaderWithButton
+        title="Speech to Text"
+        onClick={handleListening}
+        condition={listening}
+        textOnTrue="Detener"
+        textOnFalse="Grabar"
+        iconOnTrue={<FaStop />}
+        iconOnFalse={<FaPlay />}
+        showButton={true}
+      />
 
       {listening && (
         <div className="bg-white p-4 rounded-lg shadow w-full h-full">
