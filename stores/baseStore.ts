@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 
-interface UserStoreState {
-  customOpenAIKey: string | null
-  setCustomOpenAIKey: (key: string | null) => void
+interface BaseStoreState {
+configurationOpen: boolean
+  toggleConfigurationOpen: () => void
+  setConfigurationOpen: (open: boolean) => void
 }
 
-const useUserStore = create<UserStoreState>((set, get) => ({
-  customOpenAIKey: null,
-  setCustomOpenAIKey: (key) => set({ customOpenAIKey: key }),
+const useBaseStore = create<BaseStoreState>((set, get) => ({
+configurationOpen: false,
+  toggleConfigurationOpen: () => set({ configurationOpen: !get().configurationOpen }),
+  setConfigurationOpen: (open) => set({ configurationOpen: open }),
 }));
 
-export default useUserStore;
+export default useBaseStore;

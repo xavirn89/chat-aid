@@ -30,7 +30,7 @@ const SignIn: React.FC = () => {
 
   return (
     <div className='flex flex-col w-1/2 gap-4'>
-      <Image src='/images/chataid.png' width={200} height={100} alt='ChatAid Logo' className='mx-auto mt-40 mb-10' />
+      <Image src='/images/chataid.png' width={200} height={100} alt='ChatAid Logo' className='mx-auto mt-40 mb-10 w-auto h-auto' priority />
       <AuthSignSwapper type={AuthSignType.SignIn} />
       <div className='flex flex-col justify-between items-end w-full max-w-lg px-32 gap-2 mx-auto'>
         <input

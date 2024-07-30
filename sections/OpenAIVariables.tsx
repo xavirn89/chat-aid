@@ -29,7 +29,7 @@ const OpenAIVariables = () => {
           alt="Logo de OpenAI"
           width={110}
           height={100}
-          className="w-[110px] h-auto"
+          className="w-auto h-auto"
         />
       </div>
 

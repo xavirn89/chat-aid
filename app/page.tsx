@@ -13,9 +13,11 @@ import SpeechToText from '@/sections/SpeechToText'
 import VercelAI from '@/sections/VercelAI'
 import TwitchBot from '@/sections/TwitchBot'
 import OpenAIVariables from '@/sections/OpenAIVariables'
+import useBaseStore from '@/stores/baseStore'
 
 const Home = () => {
   const router = useRouter()
+  const { configurationOpen } = useBaseStore()
   const { user, setUser, setIsLogged } = useUserStore()
   const {
     twitchAccessToken, twitchRefreshToken, setTwitchAccessToken,
@@ -99,8 +101,10 @@ const Home = () => {
     <div className='flex flex-col flex-1 w-screen h-full min-h-screen'>
       <NavBar />
       <div className='flex flex-col w-full h-full max-w-6xl mx-auto mt-4 pb-10'>
-        <TwitchVariables />
-        <OpenAIVariables />
+        {configurationOpen && (<>
+          <TwitchVariables />
+          <OpenAIVariables />
+        </>)}
         <div className='flex flex-1 justify-between w-full mt-10 gap-4'>
           <TwitchBot 
             transcriptRef={transcriptRef} 
