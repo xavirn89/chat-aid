@@ -2,11 +2,11 @@
 import { db } from '@/utils/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
-export async function saveTokens_user(userId: string, accessToken: string, refreshToken: string) {
+export async function saveTokens_user(userId: string, twitchAccessToken: string, twitchRefreshToken: string) {
   try {
     await setDoc(doc(db, 'tokens', userId), {
-      accessToken,
-      refreshToken,
+      twitchAccessToken,
+      twitchRefreshToken,
     });
     return { success: true };
   } catch (error) {

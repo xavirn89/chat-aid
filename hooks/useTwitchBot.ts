@@ -1,10 +1,11 @@
 import React from 'react'
 import tmi from 'tmi.js';
 import { generateResponseToQuestion } from '@/utils/ai-sdk/functions';
+import useProvidersStore from '@/stores/providersStore';
 
 interface useTwitchBotProps {
-  channel: string | null;
-  accessToken: string | null;
+  twitchChannel: string | null;
+  twitchAccessToken: string | null;
   addChatMessage: (message: string) => void;
   transcriptRef: React.MutableRefObject<string | undefined>;
   chatMessagesRef: React.MutableRefObject<string[]>;
@@ -14,37 +15,40 @@ interface useTwitchBotProps {
   setBotRunning: (running: boolean) => void;
 }
 
-const useTwitchBot = ({ channel, accessToken, addChatMessage, transcriptRef, chatMessagesRef, resetChatMessages, resetTranscript, clientRef, setBotRunning }: useTwitchBotProps) => {
+const useTwitchBot = ({ twitchChannel, twitchAccessToken, addChatMessage, transcriptRef, chatMessagesRef, resetChatMessages, resetTranscript, clientRef, setBotRunning }: useTwitchBotProps) => {
+
+  //TO-DO: Optimize component
+  const { openaiModel } = useProvidersStore();
 
   const handleStartBot = async () => {
-    if (!channel) {
+    if (!twitchChannel) {
       console.error('Channel is not set');
       return;
     }
 
-    if (!accessToken) {
+    if (!twitchAccessToken) {
       console.error('Access token is not set');
       return;
     }
 
-    const mainChannel = channel;
+    const mainChannel = twitchChannel;
     try {
       const client = new tmi.Client({
         options: { debug: true },
         identity: {
           username: 'ChatAid',
-          password: 'oauth:' + accessToken,
+          password: 'oauth:' + twitchAccessToken,
         },
         channels: [mainChannel],
       });
 
       client.connect();
 
-      client.on('message', (channel, tags, message, self) => {
+      client.on('message', (twitchChannel, tags, message, self) => {
         if (self) return;
 
         if (message.toLowerCase() === '!hello') {
-          client.say(channel, `@${tags.username}, heya!`);
+          client.say(twitchChannel, `@${tags.username}, heya!`);
         }
 
         if (message) {
@@ -56,7 +60,7 @@ const useTwitchBot = ({ channel, accessToken, addChatMessage, transcriptRef, cha
 
       const intervalId = setInterval(async () => {
         if (!transcriptRef.current) return;
-        const response = await generateResponseToQuestion(chatMessagesRef.current, transcriptRef.current, resetChatMessages);
+        const response = await generateResponseToQuestion(chatMessagesRef.current, transcriptRef.current, resetChatMessages, openaiModel);
         if (response) {
           client.say(mainChannel, response);
         }

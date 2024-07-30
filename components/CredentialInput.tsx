@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FaCheckCircle, FaRedo } from 'react-icons/fa'
 
-interface TwitchCredentialInputProps {
+interface CredentialInputProps {
   label: string
   value: string | null
   setValue: (value: string) => void
@@ -9,7 +9,7 @@ interface TwitchCredentialInputProps {
   placeholder: string
 }
 
-const TwitchCredentialInput: React.FC<TwitchCredentialInputProps> = ({ label, value, setValue, resetValue, placeholder }) => {
+const CredentialInput: React.FC<CredentialInputProps> = ({ label, value, setValue, resetValue, placeholder }) => {
   const [inputValue, setInputValue] = useState<string>('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,9 +21,9 @@ const TwitchCredentialInput: React.FC<TwitchCredentialInputProps> = ({ label, va
   }
 
   return (
-    <div className="flex-1">
+    <div className="flex w-1/2">
       {value ? (
-        <div className="bg-white p-2 rounded shadow flex items-center justify-between">
+        <div className="bg-white p-2 rounded shadow flex items-center justify-between w-full">
           <div className="flex items-center space-x-2">
             <p className="font-bold text-gray-700">{label}:</p>
             <FaCheckCircle className="text-green-500" />
@@ -56,4 +56,4 @@ const TwitchCredentialInput: React.FC<TwitchCredentialInputProps> = ({ label, va
   )
 }
 
-export default TwitchCredentialInput
+export default CredentialInput

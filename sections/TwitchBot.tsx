@@ -1,4 +1,4 @@
-import useTwitchStore from '@/stores/twitchStore';
+import useProvidersStore from '@/stores/providersStore';
 import React, { useState, useRef, useEffect } from 'react';
 import tmi from 'tmi.js';
 import { FaPlay, FaStop, FaRedo } from 'react-icons/fa';
@@ -17,14 +17,14 @@ interface TwitchBotProps {
 }
 
 const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, resetTranscript, listening }) => {
-  const { accessToken, addChatMessage, resetChatMessages, channel, setChannel, resetChannel } = useTwitchStore();
+  const { twitchAccessToken, addChatMessage, resetChatMessages, twitchChannel, setTwitchChannel, resetTwitchChannel } = useProvidersStore();
   const [botRunning, setBotRunning] = useState(false);
   const [channelName, setChannelName] = useState<string>('');
   const clientRef = useRef<tmi.Client | null>(null);
   const [twitchMessages, setTwitchMessages] = useState<TwitchMessage[]>([]);
   const { handleStartBot, handleStopBot } = useTwitchBot({
-    channel,
-    accessToken,
+    twitchChannel,
+    twitchAccessToken,
     addChatMessage,
     transcriptRef,
     chatMessagesRef,
@@ -64,14 +64,14 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
         showButton={true}
       />
       <div className="flex w-full space-x-2">
-        {channel ? (
+        {twitchChannel ? (
           <div className="bg-white p-2 rounded shadow flex items-center justify-between w-full">
             <div className="flex items-center space-x-2 w-full">
               <p className="font-bold text-gray-700">Twitch Channel:</p>
-              <p className="text-gray-600">{channel}</p>
+              <p className="text-gray-600">{twitchChannel}</p>
             </div>
             <button
-              onClick={resetChannel}
+              onClick={resetTwitchChannel}
               className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
             >
               <FaRedo />
@@ -87,7 +87,7 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
               className="p-2 border rounded flex-grow focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
             <button
-              onClick={() => setChannel(channelName)}
+              onClick={() => setTwitchChannel(channelName)}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
             >
               Set
@@ -96,7 +96,7 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
         )}
       </div>
 
-      {channel && (
+      {twitchChannel && (
         <>
           <div className="bg-white p-4 rounded-lg shadow w-full h-full">
             <h2 className="text-lg font-semibold mb-2">Chat Messages</h2>

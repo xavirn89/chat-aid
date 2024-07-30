@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import useTwitchStore from '@/stores/twitchStore'
+import useProvidersStore from '@/stores/providersStore'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 

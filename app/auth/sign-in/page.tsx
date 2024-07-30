@@ -6,6 +6,7 @@ import { auth } from '@/utils/firebase';
 import userStore from '@/stores/userStore';
 import AuthSignSwapper from '@/components/auth/AuthSignSwapper';
 import { AuthSignType } from '@/types/global';
+import Image from 'next/image';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -28,7 +29,8 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col w-1/2 justify-center mt-52 gap-4'>
+    <div className='flex flex-col w-1/2 gap-4'>
+      <Image src='/images/chataid.png' width={200} height={100} alt='ChatAid Logo' className='mx-auto mt-40 mb-10' />
       <AuthSignSwapper type={AuthSignType.SignIn} />
       <div className='flex flex-col justify-between items-end w-full max-w-lg px-32 gap-2 mx-auto'>
         <input

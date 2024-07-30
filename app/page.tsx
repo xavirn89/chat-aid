@@ -6,20 +6,21 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/utils/firebase'
 import useUserStore from '@/stores/userStore'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import useTwitchStore from '@/stores/twitchStore'
+import useProvidersStore from '@/stores/providersStore'
 import { getTokens_user } from '@/actions/firestore/getTokens_user'
 import TwitchVariables from '@/sections/TwitchVariables'
 import SpeechToText from '@/sections/SpeechToText'
 import VercelAI from '@/sections/VercelAI'
 import TwitchBot from '@/sections/TwitchBot'
+import OpenAIVariables from '@/sections/OpenAIVariables'
 
 const Home = () => {
   const router = useRouter()
   const { user, setUser, setIsLogged } = useUserStore()
   const {
-    accessToken, refreshToken, setAccessToken,
-    setRefreshToken, chatMessages
-  } = useTwitchStore()
+    twitchAccessToken, twitchRefreshToken, setTwitchAccessToken,
+    setTwitchRefreshToken, chatMessages
+  } = useProvidersStore()
 
   const [loading, setLoading] = useState(true)
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition()
@@ -60,12 +61,12 @@ const Home = () => {
   // Obtiene los tokens de usuario si el usuario está autenticado
   useEffect(() => {
     const fetchTokens = async () => {
-      if (user?.email && (!accessToken || !refreshToken)) {
+      if (user?.email && (!twitchAccessToken || !twitchRefreshToken)) {
         try {
           const tokenResult = await getTokens_user(user.email)
           if (tokenResult.success) {
-            setAccessToken(tokenResult.data?.accessToken)
-            setRefreshToken(tokenResult.data?.refreshToken)
+            setTwitchAccessToken(tokenResult.data?.twitchAccessToken)
+            setTwitchRefreshToken(tokenResult.data?.twitchRefreshToken)
           } else {
             console.error('Error obteniendo tokens:', tokenResult.error)
           }
@@ -80,7 +81,7 @@ const Home = () => {
     }
 
     fetchTokens()
-  }, [accessToken, refreshToken, setAccessToken, setRefreshToken, user])
+  }, [twitchAccessToken, twitchRefreshToken, setTwitchAccessToken, setTwitchRefreshToken, user])
 
   if (!isClient) {
     return null
@@ -97,8 +98,9 @@ const Home = () => {
   return (
     <div className='flex flex-col flex-1 w-screen h-full min-h-screen'>
       <NavBar />
-      <div className='flex flex-col w-full h-full max-w-6xl mx-auto mt-8 pb-10'>
+      <div className='flex flex-col w-full h-full max-w-6xl mx-auto mt-4 pb-10'>
         <TwitchVariables />
+        <OpenAIVariables />
         <div className='flex flex-1 justify-between w-full mt-10 gap-4'>
           <TwitchBot 
             transcriptRef={transcriptRef} 

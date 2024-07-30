@@ -2,14 +2,14 @@
 'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { saveTokens_user } from '@/actions/firestore/saveTokens_user';
-import useTwitchStore from '@/stores/twitchStore';
+import useProvidersStore from '@/stores/providersStore';
 
 export async function GET(request: NextRequest) {
   console.log("Request:", JSON.stringify(request, null, 2));
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const state = searchParams.get('state');
-  const { twitchClientID ,twitchClientSecret } = useTwitchStore.getState();
+  const { twitchClientID ,twitchClientSecret } = useProvidersStore.getState();
 
   if (!code || !state) return NextResponse.json({ error: 'Missing code or state' }, { status: 400 });
 
