@@ -3,7 +3,7 @@ import Image from 'next/image'
 import CredentialInput from '@/components/CredentialInput'
 import useProvidersStore from '@/stores/providersStore'
 
-const OpenAIVariables = () => {
+const OpenAIVariables: React.FC = () => {
   const { openaiKey, setOpenaiKey, resetOpenaiKey, openaiModel, setOpenaiModel } = useProvidersStore()
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -16,10 +16,6 @@ const OpenAIVariables = () => {
     const envOpenaiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
     if (envOpenaiKey) setOpenaiKey(envOpenaiKey)
   }, [setOpenaiKey])
-
-  useEffect(() => {
-    setOpenaiModel('gpt-3.5-turbo')
-  }, [setOpenaiModel])
 
   return (
     <div className='flex p-8 bg-gray-100 rounded-lg shadow-lg w-full h-24 gap-4 items-center mt-4'>
@@ -36,7 +32,7 @@ const OpenAIVariables = () => {
       <div className='flex w-5/6 gap-4'>
         <CredentialInput 
           label="OpenAI Key"
-          value={openaiKey}
+          value={openaiKey || ''}
           setValue={setOpenaiKey}
           resetValue={resetOpenaiKey}
           placeholder="OpenAI Key"
@@ -56,8 +52,6 @@ const OpenAIVariables = () => {
           </select>
         </div>
       </div>
-
-      
     </div>
   )
 }

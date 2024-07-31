@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaCheckCircle, FaRedo } from 'react-icons/fa'
 
 interface CredentialInputProps {
@@ -12,6 +12,12 @@ interface CredentialInputProps {
 const CredentialInput: React.FC<CredentialInputProps> = ({ label, value, setValue, resetValue, placeholder }) => {
   const [inputValue, setInputValue] = useState<string>('')
 
+  useEffect(() => {
+    if (value) {
+      setInputValue(value)
+    }
+  }, [value])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
@@ -21,7 +27,7 @@ const CredentialInput: React.FC<CredentialInputProps> = ({ label, value, setValu
   }
 
   return (
-    <div className="flex w-1/2">
+    <div className="flex w-full">
       {value ? (
         <div className="bg-white p-2 rounded shadow flex items-center justify-between w-full">
           <div className="flex items-center space-x-2">
@@ -36,7 +42,7 @@ const CredentialInput: React.FC<CredentialInputProps> = ({ label, value, setValu
           </button>
         </div>
       ) : (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 w-full">
           <input
             type="password"
             placeholder={placeholder}

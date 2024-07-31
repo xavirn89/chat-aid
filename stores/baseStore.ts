@@ -1,15 +1,15 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 interface BaseStoreState {
-configurationOpen: boolean
+  configurationOpen: boolean
   toggleConfigurationOpen: () => void
   setConfigurationOpen: (open: boolean) => void
 }
 
 const useBaseStore = create<BaseStoreState>((set, get) => ({
-configurationOpen: false,
+  configurationOpen: true,
   toggleConfigurationOpen: () => set({ configurationOpen: !get().configurationOpen }),
   setConfigurationOpen: (open) => set({ configurationOpen: open }),
-}));
+}))
 
-export default useBaseStore;
+export default useBaseStore

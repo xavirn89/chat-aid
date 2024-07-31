@@ -1,36 +1,25 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/utils/firebase'
-import useUserStore from '@/stores/userStore'
 import useBaseStore from '@/stores/baseStore'
 
-const NavBar = () => {
-  const router = useRouter()
-  const { setUser, setIsLogged } = useUserStore()
-  const { configurationOpen, setConfigurationOpen, toggleConfigurationOpen } = useBaseStore()
+const NavBar: React.FC = () => {
+  const { configurationOpen, toggleConfigurationOpen } = useBaseStore()
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth)
-      setUser(null)
-      setIsLogged(false)
-      router.push('/auth/sign-in')
-    } catch (error) {
-      console.error('Error during sign out:', error)
-    }
-  }
 
   return (
     <div className='flex w-full max-w-7xl h-fit justify-between items-center px-14 mx-auto py-4'>
       <Image src='/images/chataid.png' width={150} height={100} alt='ChatAid Logo' />
       <div className='flex justify-end items-center gap-4'>
-        {/* button for display or hide Configuration */}
+        {/* Botón para mostrar u ocultar configuración */}
         <button 
-          className='flex gap-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+          className='flex gap-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition-all duration-200'
           onClick={toggleConfigurationOpen}
+          style={{
+            backgroundColor: '#007AFF',
+            borderRadius: '6px',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+          }}
         >
           {configurationOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-eye" width="28" height="28" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -49,12 +38,6 @@ const NavBar = () => {
             </svg>
           )}
           Configuration
-        </button>
-        <button 
-          onClick={handleLogout} 
-          className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
-        >
-          Logout
         </button>
       </div>
     </div>

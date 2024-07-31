@@ -1,8 +1,17 @@
 // app/api/twitch/oauth/route.ts
 'use server'
 import { NextRequest, NextResponse } from 'next/server'
-import { saveTokens_user } from '@/actions/firestore/saveTokens_user';
 import useProvidersStore from '@/stores/providersStore';
+import { CookieOptions } from '@/types/global'
+import { setCookie } from '@/actions/cookies/setCookie';
+import { getCookie } from '@/actions/cookies/getCookie';
+
+const options: CookieOptions = {
+  path: '/',
+  secure: true,
+  httpOnly: false,
+  maxAge: 3600
+}
 
 export async function GET(request: NextRequest) {
   console.log("Request:", JSON.stringify(request, null, 2));
@@ -13,8 +22,8 @@ export async function GET(request: NextRequest) {
 
   if (!code || !state) return NextResponse.json({ error: 'Missing code or state' }, { status: 400 });
 
-  const clientId = twitchClientID || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
-  const clientSecret = twitchClientSecret || process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET;
+  const clientId = await getCookie('TwitchClientID');
+  const clientSecret = await getCookie('TwitchClientSecret');
   const redirectUri = process.env.NEXT_PUBLIC_TWITCH_REDIRECT_URI;
   if (!clientId || !clientSecret || !redirectUri) return NextResponse.json({ error: 'Missing client ID, client secret, or redirect URI' }, { status: 400 });
 
@@ -43,11 +52,8 @@ export async function GET(request: NextRequest) {
 
     const { access_token, refresh_token } = data;
     
-    const saveResult = await saveTokens_user(state, access_token, refresh_token);
-
-    if (!saveResult.success) {
-      return NextResponse.json({ error: 'Failed to save tokens', details: saveResult.error }, { status: 500 });
-    }
+    setCookie('twitchAccessToken', access_token, options);
+    setCookie('twitchRefreshToken', refresh_token, options);
 
     return NextResponse.redirect(new URL('/', request.url));
   } catch (error: any) {
