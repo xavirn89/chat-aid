@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime'
+
 import { basePrompt } from '@/utils/ai-sdk/prompts';
 import getOpenAIClient from '@/utils/ai-sdk/openaiProvider';
 import { generateText } from 'ai';

@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import React from 'react'
 import tmi from 'tmi.js'
 import { generateResponseToQuestion } from '@/utils/ai-sdk/functions'

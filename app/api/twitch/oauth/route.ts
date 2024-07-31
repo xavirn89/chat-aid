@@ -1,5 +1,7 @@
 // app/api/twitch/oauth/route.ts
 'use server'
+import 'regenerator-runtime/runtime'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { setCookie } from '@/actions/cookies/setCookie';
 import { getCookie } from '@/actions/cookies/getCookie';

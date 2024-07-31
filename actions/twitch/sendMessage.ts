@@ -1,5 +1,6 @@
 // ./actions/twitch/sendMessage.ts
 import tmi from 'tmi.js';
+import 'regenerator-runtime/runtime'
 
 export async function sendMessage(username: string, twitchAccessToken: string) {
   if (!username || !twitchAccessToken || !process.env.NEXT_PUBLIC_TWITCH_CHANNEL) return;

@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime'
+
 import React, { useEffect } from 'react';
 import { FaCheckCircle, FaRedo, FaLink } from 'react-icons/fa';
 import useProvidersStore from '@/stores/providersStore';

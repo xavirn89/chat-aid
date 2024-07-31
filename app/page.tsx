@@ -1,4 +1,6 @@
 'use client'
+import 'regenerator-runtime/runtime'
+
 import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '@/sections/NavBar';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';

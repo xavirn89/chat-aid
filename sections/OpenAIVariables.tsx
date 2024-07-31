@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime'
+
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import CredentialInput from '@/components/CredentialInput';

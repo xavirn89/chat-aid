@@ -1,4 +1,5 @@
 'use client'
+import 'regenerator-runtime/runtime'
 
 export async function askAuthorization(twitchClientID: string | undefined, state: string) {
   if (!twitchClientID) {
