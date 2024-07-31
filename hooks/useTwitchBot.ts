@@ -4,20 +4,16 @@ import { generateResponseToQuestion } from '@/utils/ai-sdk/functions'
 import useProvidersStore from '@/stores/providersStore'
 
 interface useTwitchBotProps {
-  twitchChannel: string | null
-  twitchAccessToken: string | null
-  addChatMessage: (message: string) => void
   transcriptRef: React.MutableRefObject<string | undefined>
   chatMessagesRef: React.MutableRefObject<string[]>
-  resetChatMessages: () => void
   resetTranscript: () => void
   clientRef: React.MutableRefObject<tmi.Client | null>
   setBotRunning: (running: boolean) => void
-  openaiModel: string | null
-  updateTime: number
 }
 
-const useTwitchBot = ({ twitchChannel, twitchAccessToken, addChatMessage, transcriptRef, chatMessagesRef, resetChatMessages, resetTranscript, clientRef, setBotRunning, openaiModel, updateTime }: useTwitchBotProps) => {
+const useTwitchBot = ({ transcriptRef, chatMessagesRef, resetTranscript, clientRef, setBotRunning }: useTwitchBotProps) => {
+
+  const { twitchChannel, twitchAccessToken, addChatMessage, resetChatMessages, openaiModel, updateTime } = useProvidersStore()
 
   const handleStartBot = async () => {
     if (!twitchChannel) {
@@ -46,10 +42,6 @@ const useTwitchBot = ({ twitchChannel, twitchAccessToken, addChatMessage, transc
       client.on('message', (twitchChannel, tags, message, self) => {
         if (self) return
 
-        if (message.toLowerCase() === '!hello') {
-          client.say(twitchChannel, `@${tags.username}, heya!`)
-        }
-
         if (message) {
           const usermessage = tags.username
           const text = message
@@ -58,11 +50,8 @@ const useTwitchBot = ({ twitchChannel, twitchAccessToken, addChatMessage, transc
       })
 
       const intervalId = setInterval(async () => {
-        console.log('Checking for new messages...')
         if (!transcriptRef.current) return
-        console.log('Transcript:', transcriptRef.current)
         const response = await generateResponseToQuestion(chatMessagesRef.current, transcriptRef.current, resetChatMessages, openaiModel)
-        console.log('Response:', response)
         if (response) {
           client.say(mainChannel, response)
         }

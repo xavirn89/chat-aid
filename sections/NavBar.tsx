@@ -6,12 +6,10 @@ import useBaseStore from '@/stores/baseStore'
 const NavBar: React.FC = () => {
   const { configurationOpen, toggleConfigurationOpen } = useBaseStore()
 
-
   return (
     <div className='flex w-full max-w-7xl h-fit justify-between items-center px-14 mx-auto py-4'>
       <Image src='/images/chataid.png' width={150} height={100} alt='ChatAid Logo' />
       <div className='flex justify-end items-center gap-4'>
-        {/* Botón para mostrar u ocultar configuración */}
         <button 
           className='flex gap-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition-all duration-200'
           onClick={toggleConfigurationOpen}
@@ -37,7 +35,7 @@ const NavBar: React.FC = () => {
               <path d="M15 17l-.5 -4" />
             </svg>
           )}
-          Configuration
+          Configuración
         </button>
       </div>
     </div>

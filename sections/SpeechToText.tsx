@@ -10,6 +10,7 @@ interface SpeechToTextProps {
 }
 
 const SpeechToText: React.FC<SpeechToTextProps> = ({ transcriptRef, resetTranscript, listening, stopListening, startListening }) => {
+  // Controla el inicio y detención de la grabación de voz
   const handleListening = useCallback(() => {
     if (listening) {
       stopListening()

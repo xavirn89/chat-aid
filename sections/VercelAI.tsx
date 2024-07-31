@@ -4,6 +4,7 @@ import useProvidersStore from '@/stores/providersStore'
 const VercelAI: React.FC = () => {
   const { updateTime, setUpdateTime, increaseUpdateTime, decreaseUpdateTime } = useProvidersStore()
 
+  // Controla el cambio del tiempo de actualización de la IA
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10)
     if (!isNaN(value)) {

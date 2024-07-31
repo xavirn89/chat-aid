@@ -21,6 +21,10 @@ const CredentialInput: React.FC<CredentialInputProps> = ({ label, value, setValu
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
+  const handleReset = () => {
+    setInputValue('')
+    resetValue()
+  }
 
   const handleSetClick = () => {
     setValue(inputValue)
@@ -35,7 +39,7 @@ const CredentialInput: React.FC<CredentialInputProps> = ({ label, value, setValu
             <FaCheckCircle className="text-green-500" />
           </div>
           <button 
-            onClick={resetValue}
+            onClick={handleReset}
             className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
           >
             <FaRedo />

@@ -13,31 +13,16 @@ interface TwitchBotProps {
 }
 
 const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, resetTranscript, listening }) => {
-  const { 
-    twitchAccessToken, addChatMessage, resetChatMessages, 
-    twitchChannel, setTwitchChannel, resetTwitchChannel,
-    openaiModel, updateTime
-  } = useProvidersStore()
+  const { twitchChannel, setTwitchChannel, resetTwitchChannel } = useProvidersStore()
   
   const [botRunning, setBotRunning] = useState(false)
   const [channelName, setChannelName] = useState<string>('')
   const clientRef = useRef<tmi.Client | null>(null)
   const [twitchMessages, setTwitchMessages] = useState<TwitchMessage[]>([])
   
-  const { handleStartBot, handleStopBot } = useTwitchBot({
-    twitchChannel,
-    twitchAccessToken,
-    addChatMessage,
-    transcriptRef,
-    chatMessagesRef,
-    resetChatMessages,
-    resetTranscript,
-    clientRef,
-    setBotRunning,
-    openaiModel,
-    updateTime
-  })
+  const { handleStartBot, handleStopBot } = useTwitchBot({ transcriptRef, chatMessagesRef, resetTranscript, clientRef, setBotRunning})
 
+  // Controla el inicio y detención del bot
   const toggleBot = () => {
     if (botRunning) {
       handleStopBot()
@@ -46,6 +31,7 @@ const TwitchBot: React.FC<TwitchBotProps> = ({ transcriptRef, chatMessagesRef, r
     }
   }
 
+  // Actualiza el estado de los mensajes de chat, separando el usuario del mensaje y guardándolos en un objeto.
   useEffect(() => {
     const newMessages = chatMessagesRef.current.map((message) => {
       const [user, text] = message.split(':')
