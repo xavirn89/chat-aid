@@ -52,17 +52,15 @@ Chat Aid es una aplicación web diseñada para ayudarte a interactuar con tus es
 
 ## Uso
 
-1. Inicia el servidor de desarrollo:
+1. Si estas en local, inicia el servidor de desarrollo:
 
    ```bash
    npm run dev
-
-   # o
-
-   yarn dev
    ```
 
-2. Abre tu navegador y ve a `https://chat-aid.vercel.app/` o `http://localhost:3000` si estas en local.
+   y luego ve a `http://localhost:3000`
+
+2. Si usas la aplicación desplegada ve a `https://chat-aid.vercel.app/`
 
 3. Introduce el Twitch Client ID y el Twitch Client Secret de la Twitch App que has creado en Twitch Developers.
 
